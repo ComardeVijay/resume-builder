@@ -17,7 +17,7 @@ public class ResumeController {
     @GetMapping("/")
     public String showForm(Model model) {
         model.addAttribute("resume", new Resume());
-        return "form";
+        return "index";
     }
 
     @PostMapping("/generate")
