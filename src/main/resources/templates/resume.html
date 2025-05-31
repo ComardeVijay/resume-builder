@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Professional Resume</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .contact {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        p, li {
+            font-size: 14px;
+        }
+
+        .shadow__btn {
+            background: rgb(0,140,255);
+            box-shadow: 0 0 25px rgb(0,140,255);
+            transition: 0.5s;
+            transition-property: box-shadow;
+        }
+
+        .shadow__btn:hover {
+            box-shadow: 0 0 5px rgb(0,140,255),
+                        0 0 25px rgb(0,140,255),
+                        0 0 50px rgb(0,140,255),
+                        0 0 100px rgb(0,140,255);
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .label.shadow__btn {
+            background-color: #fff;
+            border: 2px solid rgb(91, 91, 240);
+            display: flex;
+            align-items: center;
+            border-radius: 50px;
+            width: auto;
+            padding: 5px 20px 5px 5px;
+            cursor: pointer;
+            position: relative;
+            color: rgb(91, 91, 240);
+            transition: 0.3s ease;
+        }
+
+        .label .input {
+            display: none;
+        }
+
+        .label .circle {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            background-color: rgb(91, 91, 240);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .label .circle .icon {
+            color: #fff;
+            width: 30px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .label .circle .square {
+            width: 15px;
+            aspect-ratio: 1;
+            border-radius: 2px;
+            background-color: #fff;
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .label .button-text {
+            font-size: 16px;
+            font-weight: bold;
+            margin-left: 60px;
+            color: rgb(91, 91, 240);
+            transition: all 0.3s ease;
+        }
+
+        .label .success-text {
+            display: none;
+            color: rgb(35, 174, 35);
+        }
+
+        .label .input:checked ~ .default-text {
+            display: none;
+        }
+
+        .label .input:checked ~ .success-text {
+            display: inline;
+        }
+
+        /* Optional animation if you want */
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 16px rgba(255, 255, 255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+    </style>
+</head>
+<body>
+    <h1 th:text="${resume.name}">Full Name</h1>
+    <div class="contact">
+        <span th:text="${resume.email}">email@example.com</span> |
+        <span th:text="${resume.phone}">1234567890</span>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Summary</div>
+        <p th:text="${resume.summary}">Professional summary goes here.</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Skills</div>
+        <ul>
+            <li th:each="skill : ${resume.skills}" th:text="${skill}">Skill</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Experience</div>
+        <ul>
+            <li th:each="exp : ${resume.experience}" th:text="${exp}">Experience</li>
+        </ul>
+    </div>
+
+
+    <div class="section">
+        <div class="section-title">Education</div>
+        <ul>
+            <li th:each="edu : ${resume.education}" th:text="${edu}">Education</li>
+        </ul>
+    </div>
+
+    <form action="/download-pdf" method="post">
+        <input type="hidden" name="name" th:value="${resume.name}" />
+        <input type="hidden" name="email" th:value="${resume.email}" />
+        <input type="hidden" name="phone" th:value="${resume.phone}" />
+        <input type="hidden" name="summary" th:value="${resume.summary}" />
+        <th:block th:each="skill : ${resume.skills}">
+            <input type="hidden" name="skills" th:value="${skill}" />
+        </th:block>
+        <th:block th:each="exp : ${resume.experience}">
+            <input type="hidden" name="experience" th:value="${exp}" />
+        </th:block>
+        <th:block th:each="edu : ${resume.education}">
+            <input type="hidden" name="education" th:value="${edu}" />
+
+        <div class="container">
+            <label class="label shadow__btn">
+                <input type="submit" class="input" />
+                <span class="circle">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 3v18m0 0l-6-6m6 6l6-6"
+                              stroke="currentColor" stroke-width="2"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="square"></span>
+                </span>
+                <span class="button-text default-text">Download</span>
+                <span class="button-text success-text">Downloaded</span>
+            </label>
+        </div>
+    </form>
+</body>
+</html>
